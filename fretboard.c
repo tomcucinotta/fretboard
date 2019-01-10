@@ -28,7 +28,7 @@ int string2frets[NUMSTRINGS] = {
   0, 5, 10, 15, 19, 24
 };
 
-// From 'A' to 'G'
+// Frets on the bass E string corresponding to notes from 'A' to 'G'
 int roots[] = {
   5, 7, 8, 10, 0, 1, 3
 };
@@ -57,19 +57,35 @@ int main(int argc, const char *argv[]) {
   argc--;  ++argv;
   while (argc > 0) {
     if (strcmp(argv[0], "-h") == 0 || strcmp(argv[0], "--help") == 0) {
-      printf("Usage: fretboard [-h|--help] [-c|--chord [A..G][m|M]] [-s|--scale [A..G][m|M]]\n");
+      printf("Usage: fretboard [-h|--help] [-c|--chord [A..G][#|b][m|M]] [-s|--scale [A..G][#|b][m|M]]\n");
       exit(0);
     } else if (strcmp(argv[0], "-c") == 0 || strcmp(argv[0], "--chord") == 0) {
       assert(argc > 1);
       assert(argv[1][0] >= 'A' && argv[1][0] <= 'G');
       chord_root = roots[argv[1][0] - 'A'];
-      chord_maj = argv[1][1] == 'm' ? 0 : 1;
+      int i = 1;
+      if (argv[1][i] == '#') {
+        chord_root = (chord_root + 1) % 12;
+        i++;
+      } else if (argv[1][i] == 'b') {
+        chord_root = (chord_root + 11) % 12;
+        i++;
+      }
+      chord_maj = argv[1][i] == 'm' ? 0 : 1;
       argc--;  argv++;
     } else if (strcmp(argv[0], "-s") == 0 || strcmp(argv[0], "--scale") == 0) {
       assert(argc > 1);
       assert(argv[1][0] >= 'A' && argv[1][0] <= 'G');
       scale_root = roots[argv[1][0] - 'A'];
-      scale_maj = argv[1][1] == 'm' ? 0 : 1;
+      int i = 1;
+      if (argv[1][i] == '#') {
+        scale_root = (scale_root + 1) % 12;
+        i++;
+      } else if (argv[1][i] == 'b') {
+        scale_root = (scale_root + 11) % 12;
+        i++;
+      }
+      scale_maj = argv[1][i] == 'm' ? 0 : 1;
       argc--;  argv++;
     } else {
       printf("Unknown option: %s\n", argv[0]);

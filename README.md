@@ -12,7 +12,7 @@ USAGE
 
 ```
 $ ./fretboard -h
-Usage: fretboard [-h|--help] [-c|--chord [A..G][m|M]] [-s|--scale [A..G][m|M]]
+Usage: fretboard [-h|--help] [-c|--chord [A..G][#|b][m|M]] [-s|--scale [A..G][#|b][m|M]]
 ```
 
 Example 1: display all notes of the C major scale:
