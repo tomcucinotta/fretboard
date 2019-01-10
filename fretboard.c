@@ -24,17 +24,26 @@
 #define NUMSTRINGS 6
 #define NUMFRETS 25
 
+// Fret names 
+typedef enum {
+  FRET_E = 0, FRET_F, FRET_Fd, FRET_G, FRET_Gd, FRET_A, FRET_Ad, FRET_B, FRET_C, FRET_Cd, FRET_D, FRED_Dd
+} Fret_E;
+
 int string2frets[NUMSTRINGS] = {
   0, 5, 10, 15, 19, 24
 };
 
 // Frets on the bass E string corresponding to notes from 'A' to 'G'
 int roots[] = {
-  5, 7, 8, 10, 0, 1, 3
+  FRET_A, FRET_B, FRET_C, FRET_D, FRET_E, FRET_F, FRET_G
 };
 
 char *basefrets[12] = {
   "E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#"
+};
+
+char *basefrets_b[12] = {
+  "E", "F", "Gb", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb"
 };
 
 char frets[(NUMFRETS+12*2)*4];
