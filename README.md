@@ -35,13 +35,22 @@ $ ./fretboard --scale C --chord Em
 
 ![E minor chord on C major scale as output by program](fretboard-C-Em.png)
 
-As you can see, the chord root note is  program highlighted in white.
+As you can see, the chord notes are displayed in green, and the chord root
+note is highlighted in white.
+
+You can also visualize only the notes belonging to a given chord.
+
+Example 3: display only the notes of the Em chord.
+```
+$ ./fretboard -c Em
+```
+![E minor chord as output by program](fretboard-chord-Em.png)
 
 
 If your terminal doesn't support colors, you might get something
 simpler, still useful nonetheless:
 
-Example 3: display all notes of the natural Em scale:
+Example 3: display all notes of the natural E minor scale:
 
 ```
 $ ./fretboard -s Em
