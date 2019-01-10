@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------
 Fretboard - Copyright 2019 Tommaso Cucinotta
 ----------------------------------------------------------------------
-Learning notes, scales and chords of a guitar fretboard on an ANSI
-terminal.
+Learning notes, scales and chords of a guitar fretboard on a colorful
+ANSI terminal.
 
 
 
