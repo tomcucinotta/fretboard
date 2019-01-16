@@ -38,15 +38,24 @@ int roots[] = {
   FRET_A, FRET_B, FRET_C, FRET_D, FRET_E, FRET_F, FRET_G
 };
 
-char *basefrets[12] = {
+// Useful unicode chars: 𝄫, ♭, 𝄪
+
+// Characters per chord, e.g., "G#m" => 4 chars '\x0' included
+#define CHORDSIZE 8
+
+// sharp-altered frets
+char basefrets_d[12][CHORDSIZE] = {
   "E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#"
 };
 
-char *basefrets_b[12] = {
+// flat-altered frets
+char basefrets_b[12][CHORDSIZE]= {
   "E", "F", "Gb", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb"
 };
 
-char frets[(NUMFRETS+12*2)*4];
+char basefrets[12][CHORDSIZE];
+
+char frets[(NUMFRETS+12*2)*CHORDSIZE];
 
 // natural minor scale, e.g., A, B, C, D, E, F, G
 int in_scale_min(int f) {
@@ -61,8 +70,11 @@ int in_scale_maj(int f) {
 int main(int argc, const char *argv[]) {
   int scale_root = -1;
   int scale_maj = 1;
+  int scale_b = 0;
   int chord_root = -1;
   int chord_maj = 1;
+  char scale_ch;
+
   argc--;  ++argv;
   while (argc > 0) {
     if (strcmp(argv[0], "-h") == 0 || strcmp(argv[0], "--help") == 0) {
@@ -85,13 +97,15 @@ int main(int argc, const char *argv[]) {
     } else if (strcmp(argv[0], "-s") == 0 || strcmp(argv[0], "--scale") == 0) {
       assert(argc > 1);
       assert(argv[1][0] >= 'A' && argv[1][0] <= 'G');
-      scale_root = roots[argv[1][0] - 'A'];
+      scale_ch = argv[1][0];
+      scale_root = roots[scale_ch - 'A'];
       int i = 1;
       if (argv[1][i] == '#') {
         scale_root = (scale_root + 1) % 12;
         i++;
       } else if (argv[1][i] == 'b') {
         scale_root = (scale_root + 11) % 12;
+        scale_b = 1;
         i++;
       }
       scale_maj = argv[1][i] == 'm' ? 0 : 1;
@@ -102,10 +116,51 @@ int main(int argc, const char *argv[]) {
     }
     argc--;  ++argv;
   }
-  printf(BGBLK "scale: %s%c, chord: %s%c\n", scale_root == -1 ? "-" : basefrets[scale_root], scale_maj ? ' ' : 'm', chord_root == -1 ? "-" : basefrets[chord_root], chord_maj ? ' ' : ' ');
+
+  if (scale_b)
+    memcpy(basefrets, basefrets_b, sizeof(basefrets));
+  else
+    memcpy(basefrets, basefrets_d, sizeof(basefrets));
+
+  if (scale_root != -1) {
+    int grade = 0;
+    for (int i = 0; i < 12; ++i) {
+      if ((scale_maj && in_scale_maj(i)) || (!scale_maj && in_scale_min(i))) {
+        char exp_ch = 'A' + ((scale_ch - 'A' + grade) % 7);
+        int j;
+        //printf("i=%d, exp_ch=%c\n", i, exp_ch);
+        for (j = -2; j <= 2; j++)
+          if (basefrets_d[(scale_root+i+j)%12][0] == exp_ch && basefrets_d[(scale_root+i+j)%12][1] == 0)
+            break;
+        //printf("j=%d\n", j);
+        assert (j >= -2 && j <= 2);
+        switch (j) {
+        case -2:
+          sprintf(basefrets[(scale_root+i)%12], "%c𝄪", exp_ch);
+          break;
+        case -1:
+          sprintf(basefrets[(scale_root+i)%12], "%c#", exp_ch);
+          break;
+        case 0:
+          sprintf(basefrets[(scale_root+i)%12], "%c", exp_ch);
+          break;
+        case 1:
+          sprintf(basefrets[(scale_root+i)%12], "%cb", exp_ch);
+          break;
+        case 2:
+          sprintf(basefrets[(scale_root+i)%12], "%c𝄫", exp_ch);
+          break;
+        }
+        //printf("%s\n", basefrets[(scale_root+i)%12]);
+        grade++;
+      }
+    }
+  }
+
+  printf(BGBLK "scale: %s%c, chord: %s%c\n", scale_root == -1 ? "-" : scale_b ? basefrets_b[scale_root] : basefrets_d[scale_root], scale_maj ? ' ' : 'm', chord_root == -1 ? "-" : basefrets_d[chord_root], chord_maj ? ' ' : 'm');
   printf("%s", BGBLK);
-  for (int i = 0; i < sizeof(frets)/sizeof(frets[0])/4; ++i)
-    sprintf(frets + i*4, "%s%d", basefrets[i % 12], 2 + (4+i)/12);
+  for (int i = 0; i < sizeof(frets)/sizeof(frets[0])/CHORDSIZE; ++i)
+    sprintf(frets + i*CHORDSIZE, "%s%d", basefrets[i % 12], 2 + (4+i)/12);
   for (int s = NUMSTRINGS -1; s >=0; --s) {
     for (int f = 0; f < NUMFRETS; ++f) {
       int absfret = string2frets[s] + f;
@@ -119,7 +174,7 @@ int main(int argc, const char *argv[]) {
       if (strcmp(col, KBLK) == 0)
         printf(KGRY "---");
       else
-        printf("%s%3s" KGRN, col, &frets[absfret*4]);
+        printf("%s%3s" KGRN, col, &frets[absfret*CHORDSIZE]);
       printf(KGRY "%c", f == 0 ? '|' : ' ');
     }
     printf("\n");
