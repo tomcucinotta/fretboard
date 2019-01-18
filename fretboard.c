@@ -57,6 +57,13 @@ char basefrets[12][CHORDSIZE];
 
 char frets[(NUMFRETS+12*2)*CHORDSIZE];
 
+#define chk_exit(cond, fmt, args...) do {                    \
+    if (!(cond)) {                                           \
+      printf("Error: " fmt "\n", ##args);                    \
+      exit(1);                                               \
+    }                                                        \
+  } while (0)
+
 // natural minor scale, e.g., A, B, C, D, E, F, G
 int in_scale_min(int f) {
   return f == 0 || f == 2 || f == 3 || f == 5 || f == 7 || f == 8 || f == 10;
@@ -81,8 +88,8 @@ int main(int argc, const char *argv[]) {
       printf("Usage: fretboard [-h|--help] [-c|--chord [A..G][#|b][m|M]] [-s|--scale [A..G][#|b][m|M]]\n");
       exit(0);
     } else if (strcmp(argv[0], "-c") == 0 || strcmp(argv[0], "--chord") == 0) {
-      assert(argc > 1);
-      assert(argv[1][0] >= 'A' && argv[1][0] <= 'G');
+      chk_exit(argc > 1, "Missing argument to -c option!");
+      chk_exit(argv[1][0] >= 'A' && argv[1][0] <= 'G', "Wrong argument to -c option!");
       chord_root = roots[argv[1][0] - 'A'];
       int i = 1;
       if (argv[1][i] == '#') {
@@ -92,12 +99,12 @@ int main(int argc, const char *argv[]) {
         chord_root = (chord_root + 11) % 12;
         i++;
       }
-      assert(argv[1][i] == 0 || argv[1][i] == 'm');
+      chk_exit(argv[1][i] == 0 || argv[1][i] == 'm', "Wrong argument to -c option!");
       chord_maj = argv[1][i] == 'm' ? 0 : 1;
       argc--;  argv++;
     } else if (strcmp(argv[0], "-s") == 0 || strcmp(argv[0], "--scale") == 0) {
-      assert(argc > 1);
-      assert(argv[1][0] >= 'A' && argv[1][0] <= 'G');
+      chk_exit(argc > 1, "Missing argument to -s option!");
+      chk_exit(argv[1][0] >= 'A' && argv[1][0] <= 'G', "Wrong argument to -s option!");
       scale_ch = argv[1][0];
       scale_root = roots[scale_ch - 'A'];
       int i = 1;
@@ -109,7 +116,7 @@ int main(int argc, const char *argv[]) {
         scale_b = 1;
         i++;
       }
-      assert(argv[1][i] == 0 || argv[1][i] == 'm');
+      chk_exit(argv[1][i] == 0 || argv[1][i] == 'm', "Wrong argument to -s option!");
       scale_maj = argv[1][i] == 'm' ? 0 : 1;
       argc--;  argv++;
     } else {

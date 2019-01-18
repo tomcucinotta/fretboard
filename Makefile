@@ -1,5 +1,5 @@
 PROG=fretboard
-CFLAGS=-Wall -pedantic
+CFLAGS=-Wall -pedantic -Wno-variadic-macros
 
 all: $(PROG)
 
