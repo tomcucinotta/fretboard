@@ -92,6 +92,7 @@ int main(int argc, const char *argv[]) {
         chord_root = (chord_root + 11) % 12;
         i++;
       }
+      assert(argv[1][i] == 0 || argv[1][i] == 'm');
       chord_maj = argv[1][i] == 'm' ? 0 : 1;
       argc--;  argv++;
     } else if (strcmp(argv[0], "-s") == 0 || strcmp(argv[0], "--scale") == 0) {
@@ -108,6 +109,7 @@ int main(int argc, const char *argv[]) {
         scale_b = 1;
         i++;
       }
+      assert(argv[1][i] == 0 || argv[1][i] == 'm');
       scale_maj = argv[1][i] == 'm' ? 0 : 1;
       argc--;  argv++;
     } else {
