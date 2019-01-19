@@ -142,7 +142,7 @@ int main(int argc, const char *argv[]) {
           if (basefrets_d[(scale_root+i+j)%12][0] == exp_ch && basefrets_d[(scale_root+i+j)%12][1] == 0)
             break;
         //printf("j=%d\n", j);
-        assert (j >= -2 && j <= 2);
+        assert(j >= -2 && j <= 2);
         switch (j) {
         case -2:
           sprintf(basefrets[(scale_root+i)%12], "%c𝄪", exp_ch);
