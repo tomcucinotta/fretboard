@@ -177,9 +177,12 @@ int main(int argc, const char *argv[]) {
       char *col = KBLK;
       if (scale_root != -1)
         col = (scale_maj ? in_scale_maj(scale_fret) : in_scale_min(scale_fret)) ? (scale_fret == 0 ? KGRY2 : KGRY) : col;
-      int chord_fret = (absfret + 12 - chord_root) % 12;
-      if (chord_root != -1)
+      if (chord_root != -1) {
+        int chord_fret = (absfret + 12 - chord_root) % 12;
         col = chord_fret == 0 ? KWHT : (chord_fret == (chord_maj?4:3) || chord_fret == 7) ? KGRN : col;
+      }
+      if (scale_root == -1 && chord_root == -1)
+        col = KGRY;
       if (strcmp(col, KBLK) == 0)
         printf(KGRY "---");
       else
