@@ -84,6 +84,9 @@ typedef struct {
 chord_t chords[] = {
   { "",  { 0, 4, 7, -1 } },
   { "m", { 0, 3, 7, -1 } },
+  { "7", { 0, 4, 7, 10 } },
+  { "m7", { 0, 3, 7, 10 } },
+  { "maj7", { 0, 4, 7, 11 } },
 };
 
 chord_t *find_chord(const char *chord_name) {
