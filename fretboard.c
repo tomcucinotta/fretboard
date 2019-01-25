@@ -74,12 +74,38 @@ int in_scale_maj(int f) {
   return f == 0 || f == 2 || f == 4 || f == 5 || f == 7 || f == 9 || f == 11;
 }
 
+#define CHORD_FRETS 4
+
+typedef struct {
+  char *name;
+  int frets[CHORD_FRETS];
+} chord_t;
+
+chord_t chords[] = {
+  { "",  { 0, 4, 7, -1 } },
+  { "m", { 0, 3, 7, -1 } },
+};
+
+chord_t *find_chord(const char *chord_name) {
+  for (int i = 0; i < sizeof(chords) / sizeof(chords[0]); i++)
+    if (strcmp(chords[i].name, chord_name) == 0)
+      return &chords[i];
+  return NULL;
+}
+
+int in_chord(int f, chord_t *p_chord) {
+  for (int i = 0; i < CHORD_FRETS && p_chord->frets[i] != -1; i++)
+    if (f == p_chord->frets[i])
+      return 1;
+  return 0;
+}
+
 int main(int argc, const char *argv[]) {
   int scale_root = -1;
   int scale_maj = 1;
   int scale_b = 0;
   int chord_root = -1;
-  int chord_maj = 1;
+  chord_t *p_chord = NULL;
   char scale_ch;
 
   argc--;  ++argv;
@@ -99,8 +125,8 @@ int main(int argc, const char *argv[]) {
         chord_root = (chord_root + 11) % 12;
         i++;
       }
-      chk_exit(argv[1][i] == 0 || argv[1][i] == 'm', "Wrong argument to -c option!");
-      chord_maj = argv[1][i] == 'm' ? 0 : 1;
+      p_chord = find_chord(&argv[1][i]);
+      chk_exit(p_chord != NULL, "Unknown chord type: %s", argv[1]);
       argc--;  argv++;
     } else if (strcmp(argv[0], "-s") == 0 || strcmp(argv[0], "--scale") == 0) {
       chk_exit(argc > 1, "Missing argument to -s option!");
@@ -166,7 +192,7 @@ int main(int argc, const char *argv[]) {
     }
   }
 
-  printf(BGBLK "scale: %s%c, chord: %s%c\n", scale_root == -1 ? "-" : scale_b ? basefrets_b[scale_root] : basefrets_d[scale_root], scale_maj ? ' ' : 'm', chord_root == -1 ? "-" : basefrets_d[chord_root], chord_maj ? ' ' : 'm');
+  printf(BGBLK "scale: %s%c, chord: %s%s\n", scale_root == -1 ? "-" : scale_b ? basefrets_b[scale_root] : basefrets_d[scale_root], scale_maj ? ' ' : 'm', chord_root == -1 ? "-" : basefrets_d[chord_root], p_chord == NULL ? "" : p_chord->name);
   printf("%s", BGBLK);
   for (int i = 0; i < sizeof(frets)/sizeof(frets[0])/CHORDSIZE; ++i)
     sprintf(frets + i*CHORDSIZE, "%s%d", basefrets[i % 12], 2 + (4+i)/12);
@@ -179,7 +205,7 @@ int main(int argc, const char *argv[]) {
         col = (scale_maj ? in_scale_maj(scale_fret) : in_scale_min(scale_fret)) ? (scale_fret == 0 ? KGRY2 : KGRY) : col;
       if (chord_root != -1) {
         int chord_fret = (absfret + 12 - chord_root) % 12;
-        col = chord_fret == 0 ? KWHT : (chord_fret == (chord_maj?4:3) || chord_fret == 7) ? KGRN : col;
+        col = chord_fret == 0 ? KWHT : in_chord(chord_fret, p_chord) ? KGRN : col;
       }
       if (scale_root == -1 && chord_root == -1)
         col = KGRY;
