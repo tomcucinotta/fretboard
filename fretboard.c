@@ -21,16 +21,26 @@
 #define KNRMFACE  "\x1B[22m"
 #define KBOLD "\x1B[1m"
 
-#define NUMSTRINGS 6
-#define NUMFRETS 25
+#define MAX_NUMSTRINGS 6
+#define MAX_NUMFRETS 30
+
+typedef enum {
+      GUITAR = 0,
+      UKULELE,
+      NUM_INSTR
+} Instrument;
+
+int num_strings[NUM_INSTR] = { 6, 4 };
+int num_frets[NUM_INSTR] = { 25, 20 };
 
 // Fret names 
 typedef enum {
   FRET_E = 0, FRET_F, FRET_Fd, FRET_G, FRET_Gd, FRET_A, FRET_Ad, FRET_B, FRET_C, FRET_Cd, FRET_D, FRED_Dd
 } Fret_E;
 
-int string2frets[NUMSTRINGS] = {
-  0, 5, 10, 15, 19, 24
+int string2frets[NUM_INSTR][MAX_NUMSTRINGS] = {
+  { 0, 5, 10, 15, 19, 24 },
+  { 12*2+3, 12*2-4, 12*2, 12*2+5, -1, -1 }
 };
 
 // Frets on the bass E string corresponding to notes from 'A' to 'G'
@@ -53,9 +63,11 @@ char basefrets_b[12][CHORDSIZE]= {
   "E", "F", "Gb", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb"
 };
 
+int instr = GUITAR;
+
 char basefrets[12][CHORDSIZE];
 
-char frets[(NUMFRETS+12*2)*CHORDSIZE];
+char frets[(MAX_NUMFRETS+12*2)*CHORDSIZE];
 
 #define chk_exit(cond, fmt, args...) do {                    \
     if (!(cond)) {                                           \
@@ -114,8 +126,10 @@ int main(int argc, const char *argv[]) {
   argc--;  ++argv;
   while (argc > 0) {
     if (strcmp(argv[0], "-h") == 0 || strcmp(argv[0], "--help") == 0) {
-      printf("Usage: fretboard [-h|--help] [-c|--chord [A..G][#|b][m|M]] [-s|--scale [A..G][#|b][m|M]]\n");
+      printf("Usage: fretboard [-h|--help] [-u|--ukulele] [-c|--chord [A..G][#|b][m|M]] [-s|--scale [A..G][#|b][m|M]]\n");
       exit(0);
+    } else if (strcmp(argv[0], "-u") == 0 || strcmp(argv[0], "--ukulele") == 0) {
+      instr = UKULELE;
     } else if (strcmp(argv[0], "-c") == 0 || strcmp(argv[0], "--chord") == 0) {
       chk_exit(argc > 1, "Missing argument to -c option!");
       chk_exit(argv[1][0] >= 'A' && argv[1][0] <= 'G', "Wrong argument to -c option!");
@@ -199,9 +213,9 @@ int main(int argc, const char *argv[]) {
   printf("%s", BGBLK);
   for (int i = 0; i < sizeof(frets)/sizeof(frets[0])/CHORDSIZE; ++i)
     sprintf(frets + i*CHORDSIZE, "%s%d", basefrets[i % 12], 2 + (4+i)/12);
-  for (int s = NUMSTRINGS -1; s >=0; --s) {
-    for (int f = 0; f < NUMFRETS; ++f) {
-      int absfret = string2frets[s] + f;
+  for (int s = num_strings[instr] -1; s >=0; --s) {
+    for (int f = 0; f < num_frets[instr]; ++f) {
+      int absfret = string2frets[instr][s] + f;
       int scale_fret = (absfret + 12 - scale_root) % 12;
       char *col = KBLK;
       if (scale_root != -1)
@@ -220,10 +234,10 @@ int main(int argc, const char *argv[]) {
     }
     printf("\n");
   }
-  for (int f = 0; f < NUMFRETS; ++f)
+  for (int f = 0; f < num_frets[instr]; ++f)
     printf("---%c", f == 0 ? '+' : '-');
   printf("\n");
-  for (int f = 0; f < NUMFRETS; ++f)
+  for (int f = 0; f < num_frets[instr]; ++f)
     if (f%12 == 5 || f%12 == 7 || f%12 == 0)
       printf("%s%3d ",  KWHT, f);
     else
