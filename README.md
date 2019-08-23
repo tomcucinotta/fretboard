@@ -12,7 +12,7 @@ USAGE
 
 ```
 $ ./fretboard -h
-Usage: fretboard [-h|--help] [-c|--chord [A..G][#|b][m|M]] [-s|--scale [A..G][#|b][m|M]]
+Usage: fretboard [-h|--help] [-u|--ukulele] [-c|--chord [A..G][#|b][m|M]] [-s|--scale [A..G][#|b][m|M]]
 ```
 
 Example 1: display all notes of the C major scale:
@@ -70,6 +70,13 @@ scale: Em, chord: -
 whereas the fully coloured version looks like this:
 
 ![Natural E minor scale as output by program](fretboard-Em.png)
+
+Example 4: display the notes of the Am7 chord for Ukulele:
+
+```
+$ ./fretboard -u -c Am7
+```
+![Am7 chord as output by program](fretboard-uk-chord-Am7.png)
 
 
 ----------------------------------------------------------------------
