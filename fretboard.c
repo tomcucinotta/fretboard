@@ -99,6 +99,14 @@ chord_t chords[] = {
   { "7", { 0, 4, 7, 10 } },
   { "m7", { 0, 3, 7, 10 } },
   { "maj7", { 0, 4, 7, 11 } },
+  { "5", { 0, 7, -1, -1 } },
+  { "6", { 0, 4, 7, 9 } },
+  { "m6", { 0, 3, 7, 9 } },
+  { "dim", { 0, 3, 6, -1 } },
+  { "sus2", { 0, 2, 7, -1 } },
+  { "sus4", { 0, 5, 7, -1 } },
+  { "aug",  { 0, 4, 8, -1 } },
+  { "aug7",  { 0, 4, 8, 10 } },
 };
 
 chord_t *find_chord(const char *chord_name) {
@@ -126,7 +134,7 @@ int main(int argc, const char *argv[]) {
   argc--;  ++argv;
   while (argc > 0) {
     if (strcmp(argv[0], "-h") == 0 || strcmp(argv[0], "--help") == 0) {
-      printf("Usage: fretboard [-h|--help] [-u|--ukulele] [-c|--chord [A..G][#|b][m|M]] [-s|--scale [A..G][#|b][m|M]]\n");
+      printf("Usage: fretboard [-h|--help] [-u|--ukulele] [-c|--chord [A..G][#|b][m|m7|5|6|m6|dim|sus2|sus4|aug|aug7] [-s|--scale [A..G][#|b][m|M]]\n");
       exit(0);
     } else if (strcmp(argv[0], "-u") == 0 || strcmp(argv[0], "--ukulele") == 0) {
       instr = UKULELE;
