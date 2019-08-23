@@ -235,7 +235,7 @@ int main(int argc, const char *argv[]) {
     printf("\n");
   }
   for (int f = 0; f < num_frets[instr]; ++f)
-    printf("---%c", f == 0 ? '+' : '-');
+    printf("~~~%s", f == 0 ? "+" : "~");
   printf("\n");
   for (int f = 0; f < num_frets[instr]; ++f)
     if (f%12 == 5 || f%12 == 7 || f%12 == 0)
