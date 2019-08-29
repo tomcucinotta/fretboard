@@ -134,10 +134,12 @@ int main(int argc, const char *argv[]) {
   argc--;  ++argv;
   while (argc > 0) {
     if (strcmp(argv[0], "-h") == 0 || strcmp(argv[0], "--help") == 0) {
-      printf("Usage: fretboard [-h|--help] [-u|--ukulele] [-c|--chord [A..G][#|b][m|m7|5|6|m6|dim|sus2|sus4|aug|aug7] [-s|--scale [A..G][#|b][m|M]]\n");
+      printf("Usage: fretboard [-h|--help] [-u|--ukulele] [-g|--guitar] [-c|--chord [A..G][#|b][m|m7|5|6|m6|dim|sus2|sus4|aug|aug7] [-s|--scale [A..G][#|b][m|M]]\n");
       exit(0);
     } else if (strcmp(argv[0], "-u") == 0 || strcmp(argv[0], "--ukulele") == 0) {
       instr = UKULELE;
+    } else if (strcmp(argv[0], "-g") == 0 || strcmp(argv[0], "--guitar") == 0) {
+      instr = GUITAR;
     } else if (strcmp(argv[0], "-c") == 0 || strcmp(argv[0], "--chord") == 0) {
       chk_exit(argc > 1, "Missing argument to -c option!");
       chk_exit(argv[1][0] >= 'A' && argv[1][0] <= 'G', "Wrong argument to -c option!");
