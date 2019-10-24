@@ -10,13 +10,13 @@
 #define KBLU  "\x1B[34m"
 #define KMAG  "\x1B[35m"
 #define KCYN  "\x1B[36m"
-#define KWHT  "\x1B[37m"
+#define KWHT  "\x1B[39m"
 
-#define KGRY  "\x1B[38;2;64;64;64m"
-#define KGRY2  "\x1B[38;2;128;128;128m"
+#define KGRY  "\x1B[38;2;128;128;128m"
+#define KGRY2  "\x1B[37;2m"
 
 #define KBLK  "\x1B[38;2;0;0;0m"
-#define BGBLK "\x1B[48;2;0;0;0m"
+#define BGBLK "\x1B[49;2;0;0;0m"
 
 #define KNRMFACE  "\x1B[22m"
 #define KBOLD "\x1B[1m"
