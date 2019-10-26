@@ -39,9 +39,14 @@ typedef enum {
 } Fret_E;
 
 int string2frets[NUM_INSTR][MAX_NUMSTRINGS] = {
-  { 0, 5, 10, 15, 19, 24 },
+  { 0, 5, 10, 15, 19, 24 },                    // EADGBE (Mi La Re Sol Si Mi), Standard tuning
   { 12*2+3, 12*2-4, 12*2, 12*2+5, -1, -1 }
 };
+
+// Alternate tuning for guitar:
+//  { 0, 5, 10, 15, 19, 24 },                    // EADGBE (Mi La Re Sol Si Mi), Standard tuning
+//  { -2, 5, 10, 15, 19, 24 },                   // DADGBE (Re La Re Sol Si Mi), Dropped D
+//  { -2, 3, 10, 15, 19, 22 },                   // DADGBE (Re Sol Re Sol Si Mi), Open G
 
 // Frets on the bass E string corresponding to notes from 'A' to 'G'
 int roots[] = {
