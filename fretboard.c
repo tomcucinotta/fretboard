@@ -67,7 +67,7 @@ int instr = GUITAR;
 
 char basefrets[12][CHORDSIZE];
 
-char frets[(MAX_NUMFRETS+12*2)*CHORDSIZE];
+char frets[(MAX_NUMFRETS+12*3)*CHORDSIZE];
 
 #define chk_exit(cond, fmt, args...) do {                    \
     if (!(cond)) {                                           \
@@ -222,11 +222,11 @@ int main(int argc, const char *argv[]) {
   printf(BGBLK "scale: %s%c, chord: %s%s\n", scale_root == -1 ? "-" : scale_b ? basefrets_b[scale_root] : basefrets_d[scale_root], scale_maj ? ' ' : 'm', chord_root == -1 ? "-" : basefrets_d[chord_root], p_chord == NULL ? "" : p_chord->name);
   printf("%s", BGBLK);
   for (int i = 0; i < sizeof(frets)/sizeof(frets[0])/CHORDSIZE; ++i)
-    sprintf(frets + i*CHORDSIZE, "%s%d", basefrets[i % 12], 2 + (4+i)/12);
+    sprintf(frets + i*CHORDSIZE, "%s%d", basefrets[i % 12], 1 + (4+i)/12);
   for (int s = num_strings[instr] -1; s >=0; --s) {
     for (int f = 0; f < num_frets[instr]; ++f) {
-      int absfret = string2frets[instr][s] + f;
-      int scale_fret = (absfret + 12 - scale_root) % 12;
+      int absfret = 12 + string2frets[instr][s] + f;
+      int scale_fret = (absfret + 24 - scale_root) % 12;
       char *col = KBLK;
       if (scale_root != -1)
         col = (scale_maj ? in_scale_maj(scale_fret) : in_scale_min(scale_fret)) ? (scale_fret == 0 ? KGRY2 : KGRY) : col;
