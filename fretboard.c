@@ -46,7 +46,7 @@ int string2frets[NUM_INSTR][MAX_NUMSTRINGS] = {
 // Alternate tuning for guitar:
 //  { 0, 5, 10, 15, 19, 24 },                    // EADGBE (Mi La Re Sol Si Mi), Standard tuning
 //  { -2, 5, 10, 15, 19, 24 },                   // DADGBE (Re La Re Sol Si Mi), Dropped D
-//  { -2, 3, 10, 15, 19, 22 },                   // DADGBE (Re Sol Re Sol Si Mi), Open G
+//  { -2, 3, 10, 15, 19, 22 },                   // DGDGBD (Re Sol Re Sol Si Re), Open G
 
 // Frets on the bass E string corresponding to notes from 'A' to 'G'
 int roots[] = {
