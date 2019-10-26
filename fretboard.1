@@ -1,0 +1,37 @@
+.TH FRETBOARD 1
+.SH NAME
+fretboard \- learn guitar fretboard notes, scales and chords on a colorful ANSI terminal
+.SH SYNOPSIS
+.B fretboard
+[-h|--help] [-u|--ukulele] [-g|--guitar]
+          [-c|--chord [A..G][#|b][m|m7|5|6|m6|dim|sus2|sus4|aug|aug7]
+          [-s|--scale [A..G][#|b][m|M]]
+.SH DESCRIPTION
+.B fretboard
+is an open-source multi-platform C program that displays musical scales and chords for guitar and ukulele in textual mode, leveraging the options related to text colour and format available on any ANSI-compliant terminal, like gnome-terminal (or cmder on Windows).
+.B fretboard
+does not limit itself to dislaying the available positions for a given chord, as tens of on-line websites already do, but the program can visualize all the positions where each note of a chord or scale is located on the fretboard, allowing for finding the optimal combinations under any condition (for example, it is easy to find out how easier it is to play a chord muting one or more chords).
+
+For more information or to retrieve the latest version of this software, see:
+.B https://github.com/tomcucinotta/fretboard
+
+.SH OPTIONS
+.TP
+.BR -h|--help
+Print a help message and exit.
+.BR -u|--ukulele
+Select the ukulele mode.
+.BR -g|--guitar
+Select the guitar mode.
+.BR -s|--scale [A..G][#|b][m|M]
+Select the scale to display on the fretboard.
+.BR -c|--chord [A..G][#|b][m|m7|5|6|m6|dim|sus2|sus4|aug|aug7]
+Select the chord to display on the fretboard.
+
+.SH LICENSE
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program, in the LICENSE.txt file. If not, see https://www.gnu.org/licenses/.
+
