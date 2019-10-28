@@ -1,11 +1,11 @@
 VERSION=1.0
 PROG=fretboard
 CFLAGS=-Wall -pedantic -Wno-variadic-macros
-prefix ?=/usr/local
+PREFIX ?=/usr/local
 
-bindir:=$(prefix)/bin
-mandir:=$(prefix)/man/man1
-pkgdir:=$(PROG)-$(VERSION)
+BINDIR:=$(PREFIX)/bin
+MANDIR:=$(PREFIX)/man/man1
+PKGDIR:=$(PROG)-$(VERSION)
 
 all: $(PROG)
 
@@ -13,15 +13,15 @@ clean:
 	rm -f *~ *.o $(PROG)
 
 pkg:
-	mkdir -p /tmp/$(pkgdir) && cp -a * /tmp/$(pkgdir)/ && cd /tmp/$(pkgdir) && make clean && cd .. && tar -czf $(pkgdir).tar.gz $(pkgdir) && echo "Source package built into /tmp/$(pkgdir).tar.gz"
+	mkdir -p /tmp/$(PKGDIR) && cp -a * /tmp/$(PKGDIR)/ && cd /tmp/$(PKGDIR) && make clean && cd .. && tar -czf $(PKGDIR).tar.gz $(PKGDIR) && echo "Source package built into /tmp/$(PKGDIR).tar.gz"
 
 install:
-	mkdir -p $(DESTDIR)$(bindir)
-	cp $(PROG) $(DESTDIR)$(bindir)/
-	chmod 0755 $(DESTDIR)$(bindir)/$(PROG)
-	mkdir -p $(DESTDIR)$(mandir)
-	cp $(PROG).1 $(DESTDIR)$(mandir)/
+	mkdir -p $(DESTDIR)$(BINDIR)
+	cp $(PROG) $(DESTDIR)$(BINDIR)/
+	chmod 0755 $(DESTDIR)$(BINDIR)/$(PROG)
+	mkdir -p $(DESTDIR)$(MANDIR)
+	cp $(PROG).1 $(DESTDIR)$(MANDIR)/
 
 uninstall:
-	rm -f $(DESTDIR)$(bindir)/$(PROG)
-	rm -f $(DESTDIR)$(mandir)/$(PROG).1
+	rm -f $(DESTDIR)$(BINDIR)/$(PROG)
+	rm -f $(DESTDIR)$(MANDIR)/$(PROG).1
