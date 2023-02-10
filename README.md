@@ -12,7 +12,7 @@ USAGE
 
 ```
 $ ./fretboard -h
-Usage: fretboard [-h|--help] [-u|--ukulele] [-c|--chord [A..G][#|b][m|M]] [-s|--scale [A..G][#|b][m|M]]
+Usage: fretboard [-h|--help] [-u|--ukulele] [-p|--piano] [-c|--chord [A..G][#|b][m|M]] [-s|--scale [A..G][#|b][m|M]]
 ```
 
 Example 1: display all notes of the C major scale:
@@ -77,6 +77,54 @@ Example 4: display the notes of the Am7 chord for Ukulele:
 $ ./fretboard -u -c Am7
 ```
 ![Am7 chord as output by program](fretboard-uk-chord-Am7.png)
+
+
+Example 5: display all notes of the natural E minor scale on a piano:
+```
+$ ./fretboard -p -s Em
+```
+```
+scale: Em, chord: -
+,___________________________,___________________________, 
+|  | | | |  |  |o| | | | |  |  | | | |  |  |o| | | | |  | 
+|  | | | |  |  |o| | | | |  |  | | | |  |  |o| | | | |  | 
+|  |_| |_|  |  |_| |_| |_|  |  |_| |_|  |  |_| |_| |_|  | 
+| o | o | o |   | o | o | o | o | o | o |   | o | o | o | 
+| o | o | o |   | o | o | o | o | o | o |   | o | o | o | 
+|___|___|___|___|___|___|___|___|___|___|___|___|___|___|
+```
+
+
+Example 6: display all notes of the G chord on the natural E minor scale on a piano:
+```
+$ ./fretboard -p -s Em -c G
+```
+```
+scale: Em, chord: G
+,___________________________,___________________________, 
+|  | | | |  |  |o| | | | |  |  | | | |  |  |o| | | | |  | 
+|  | | | |  |  |o| | | | |  |  | | | |  |  |o| | | | |  | 
+|  |_| |_|  |  |_| |_| |_|  |  |_| |_|  |  |_| |_| |_|  | 
+| o | # | o |   | # | o | # | o | # | o |   | # | o | # | 
+| o | # | o |   | # | o | # | o | # | o |   | # | o | # | 
+|___|___|___|___|___|___|___|___|___|___|___|___|___|___|
+```
+
+
+Example 7: display all notes of the D major chord on the natural E minor scale on a piano:
+```
+$ ./fretboard -p -s Em -c D
+```
+```
+scale: Em, chord: D
+,___________________________,___________________________, 
+|  | | | |  |  |#| | | | |  |  | | | |  |  |#| | | | |  | 
+|  | | | |  |  |#| | | | |  |  | | | |  |  |#| | | | |  | 
+|  |_| |_|  |  |_| |_| |_|  |  |_| |_|  |  |_| |_| |_|  | 
+| o | # | o |   | o | # | o | o | # | o |   | o | # | o | 
+| o | # | o |   | o | # | o | o | # | o |   | o | # | o | 
+|___|___|___|___|___|___|___|___|___|___|___|___|___|___|
+```
 
 
 ----------------------------------------------------------------------
