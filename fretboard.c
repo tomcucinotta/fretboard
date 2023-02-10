@@ -13,10 +13,13 @@
 #define KWHT  "\x1B[39m"
 
 #define KGRY  "\x1B[38;2;128;128;128m"
-#define KGRY2  "\x1B[37;2m"
+#define KGRY2 "\x1B[37;2m"
 
 #define KBLK  "\x1B[38;2;0;0;0m"
-#define BGBLK "\x1B[49;2;0;0;0m"
+#define KDEF  "\x1B[39m"
+#define BGBLK "\x1B[48;2;0;0;0m"
+#define BGWHT "\x1B[48;2;255;255;255m"
+#define BGDEF "\x1B[49m"
 
 #define KNRMFACE  "\x1B[22m"
 #define KBOLD "\x1B[1m"
@@ -114,6 +117,14 @@ chord_t chords[] = {
   { "aug7",  { 0, 4, 8, 10 } },
 };
 
+int scale_root = -1;
+int scale_maj = 1;
+int scale_b = 0;
+int chord_root = -1;
+chord_t *p_chord = NULL;
+char scale_ch;
+int piano_mode = 0;
+
 chord_t *find_chord(const char *chord_name) {
   for (int i = 0; i < sizeof(chords) / sizeof(chords[0]); i++)
     if (strcmp(chords[i].name, chord_name) == 0)
@@ -128,23 +139,127 @@ int in_chord(int f, chord_t *p_chord) {
   return 0;
 }
 
-int main(int argc, const char *argv[]) {
-  int scale_root = -1;
-  int scale_maj = 1;
-  int scale_b = 0;
-  int chord_root = -1;
-  chord_t *p_chord = NULL;
-  char scale_ch;
+int num_octs = 2;
 
+char black_keys[12] = {
+  0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0
+};
+
+int is_black(int k) {
+  return black_keys[k % 12];
+}
+
+int is_white(int k) {
+  return !is_black(k);
+}
+
+// 0: not in scale
+// 1: in scale
+int keyb_in_scale(int i) {
+  if (scale_root == -1)
+    return 0;
+  int k = (24 - (scale_root + 4) + i) % 12;
+  return ((scale_maj && in_scale_maj(k)) || (!scale_maj && in_scale_min(k)));
+}
+
+// 0: not in chord
+// 1: in chord
+// 2: base chord note
+int keyb_in_chord(int i) {
+  if (chord_root == -1)
+    return 0;
+  int k = (24 - (chord_root + 4) + i) % 12;
+  return (k == 0 ? 2 : in_chord(k, p_chord) ? 1 : 0);
+}
+
+void draw_keyboard() {
+  for (int oct = 0; oct < num_octs; oct++)
+    printf(",___________________________");
+  printf(", ");
+  printf("\n");
+  for (int r = 0; r < 6; r++) {
+    char sp = (r == 5 ? '_' : ' ');
+    printf("|%c", sp);
+    for (int oct = 0; oct < num_octs; oct++) {
+      for (int i = 0; i < 12; i++) {
+        char * chp =
+          keyb_in_chord(i) == 2 ? KBOLD KCYN "#" KDEF KNRMFACE :
+          keyb_in_chord(i) ? KGRN "#" KDEF :
+          keyb_in_scale(i) ? KGRY "o" KDEF :
+          " ";
+        if ((is_black(i) && r == 2) || (is_white(i) && r == 5))
+          chp = KDEF "_";
+        if (r < 3) {
+          if (is_white(i) && is_white(i+1))
+            printf("  ");
+          else {
+            if (is_black(i))
+              printf("%s|", chp);
+            else
+              printf("%c|", sp);
+          }
+        } else {
+          if (is_white(i))
+            printf("%s%c", chp, sp);
+          else
+            printf("|%c", sp);
+        }
+        if (is_white(i) && is_white(i+1))
+          printf("|%c", (r == 5 && i == 11 && oct == num_octs-1 ? ' ' : sp));
+      }
+    }
+    printf("\n");
+  }
+  printf("\n");
+}
+
+void draw_fretboard() {
+  for (int i = 0; i < sizeof(frets)/sizeof(frets[0])/CHORDSIZE; ++i)
+    sprintf(frets + i*CHORDSIZE, "%s%d", basefrets[i % 12], 1 + (4+i)/12);
+  for (int s = num_strings[instr] -1; s >=0; --s) {
+    for (int f = 0; f < num_frets[instr]; ++f) {
+      int absfret = 12 + string2frets[instr][s] + f;
+      int scale_fret = (absfret + 24 - scale_root) % 12;
+      char *col = KBLK;
+      if (scale_root != -1)
+        col = (scale_maj ? in_scale_maj(scale_fret) : in_scale_min(scale_fret)) ? (scale_fret == 0 ? KGRY2 : KGRY) : col;
+      if (chord_root != -1) {
+        int chord_fret = (absfret + 12 - chord_root) % 12;
+        col = chord_fret == 0 ? KWHT : in_chord(chord_fret, p_chord) ? KGRN : col;
+      }
+      if (scale_root == -1 && chord_root == -1)
+        col = KGRY;
+      if (strcmp(col, KBLK) == 0)
+        printf(KGRY "---");
+      else
+        printf("%s%3s" KGRN, col, &frets[absfret*CHORDSIZE]);
+      printf(KGRY "%c", f == 0 ? '|' : ' ');
+    }
+    printf("\n");
+  }
+  for (int f = 0; f < num_frets[instr]; ++f)
+    printf("~~~%s", f == 0 ? "+" : "~");
+  printf("\n");
+  for (int f = 0; f < num_frets[instr]; ++f)
+    if (f%12 == 5 || f%12 == 7 || f%12 == 0)
+      printf("%s%3d ",  KWHT, f);
+    else
+      printf("%s%3d ", KGRY, f);
+  printf("\n");
+}
+
+int main(int argc, const char *argv[]) {
   argc--;  ++argv;
   while (argc > 0) {
     if (strcmp(argv[0], "-h") == 0 || strcmp(argv[0], "--help") == 0) {
-      printf("Usage: fretboard [-h|--help] [-u|--ukulele] [-g|--guitar] [-c|--chord [A..G][#|b][m|m7|5|6|m6|dim|sus2|sus4|aug|aug7] [-s|--scale [A..G][#|b][m|M]]\n");
+      printf("Usage: fretboard [-h|--help] [-u|--ukulele] [-g|--guitar] [-p|--piano] [-c|--chord [A..G][#|b][m|m7|5|6|m6|dim|sus2|sus4|aug|aug7] [-s|--scale [A..G][#|b][m|M]]\n");
       exit(0);
     } else if (strcmp(argv[0], "-u") == 0 || strcmp(argv[0], "--ukulele") == 0) {
       instr = UKULELE;
     } else if (strcmp(argv[0], "-g") == 0 || strcmp(argv[0], "--guitar") == 0) {
       instr = GUITAR;
+    } else if (strcmp(argv[0], "-p") == 0 || strcmp(argv[0], "--piano") == 0) {
+      piano_mode = 1;
     } else if (strcmp(argv[0], "-c") == 0 || strcmp(argv[0], "--chord") == 0) {
       chk_exit(argc > 1, "Missing argument to -c option!");
       chk_exit(argv[1][0] >= 'A' && argv[1][0] <= 'G', "Wrong argument to -c option!");
@@ -224,38 +339,10 @@ int main(int argc, const char *argv[]) {
     }
   }
 
-  printf(BGBLK "scale: %s%c, chord: %s%s\n", scale_root == -1 ? "-" : scale_b ? basefrets_b[scale_root] : basefrets_d[scale_root], scale_maj ? ' ' : 'm', chord_root == -1 ? "-" : basefrets_d[chord_root], p_chord == NULL ? "" : p_chord->name);
-  printf("%s", BGBLK);
-  for (int i = 0; i < sizeof(frets)/sizeof(frets[0])/CHORDSIZE; ++i)
-    sprintf(frets + i*CHORDSIZE, "%s%d", basefrets[i % 12], 1 + (4+i)/12);
-  for (int s = num_strings[instr] -1; s >=0; --s) {
-    for (int f = 0; f < num_frets[instr]; ++f) {
-      int absfret = 12 + string2frets[instr][s] + f;
-      int scale_fret = (absfret + 24 - scale_root) % 12;
-      char *col = KBLK;
-      if (scale_root != -1)
-        col = (scale_maj ? in_scale_maj(scale_fret) : in_scale_min(scale_fret)) ? (scale_fret == 0 ? KGRY2 : KGRY) : col;
-      if (chord_root != -1) {
-        int chord_fret = (absfret + 12 - chord_root) % 12;
-        col = chord_fret == 0 ? KWHT : in_chord(chord_fret, p_chord) ? KGRN : col;
-      }
-      if (scale_root == -1 && chord_root == -1)
-        col = KGRY;
-      if (strcmp(col, KBLK) == 0)
-        printf(KGRY "---");
-      else
-        printf("%s%3s" KGRN, col, &frets[absfret*CHORDSIZE]);
-      printf(KGRY "%c", f == 0 ? '|' : ' ');
-    }
-    printf("\n");
-  }
-  for (int f = 0; f < num_frets[instr]; ++f)
-    printf("~~~%s", f == 0 ? "+" : "~");
-  printf("\n");
-  for (int f = 0; f < num_frets[instr]; ++f)
-    if (f%12 == 5 || f%12 == 7 || f%12 == 0)
-      printf("%s%3d ",  KWHT, f);
-    else
-      printf("%s%3d ", KGRY, f);
-  printf("\n");
+  printf("scale: %s%c, chord: %s%s\n", scale_root == -1 ? "-" : scale_b ? basefrets_b[scale_root] : basefrets_d[scale_root], scale_maj ? ' ' : 'm', chord_root == -1 ? "-" : basefrets_d[chord_root], p_chord == NULL ? "" : p_chord->name);
+
+  if (piano_mode)
+    draw_keyboard();
+  else
+    draw_fretboard();
 }
