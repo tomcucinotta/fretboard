@@ -95,36 +95,19 @@ scale: Em, chord: -
 ```
 
 
-Example 6: display all notes of the G chord on the natural E minor scale on a piano:
+Example 6: display all notes of the D major chord on a piano:
+```
+$ ./fretboard -p -c D
+```
+![D chord for piano as output by program](piano-chord-D.png)
+
+
+Example 7: display all notes of the G chord on the natural E minor scale on a piano:
 ```
 $ ./fretboard -p -s Em -c G
 ```
-```
-scale: Em, chord: G
-,___________________________,___________________________, 
-|  | | | |  |  |o| | | | |  |  | | | |  |  |o| | | | |  | 
-|  | | | |  |  |o| | | | |  |  | | | |  |  |o| | | | |  | 
-|  |_| |_|  |  |_| |_| |_|  |  |_| |_|  |  |_| |_| |_|  | 
-| o | # | o |   | # | o | # | o | # | o |   | # | o | # | 
-| o | # | o |   | # | o | # | o | # | o |   | # | o | # | 
-|___|___|___|___|___|___|___|___|___|___|___|___|___|___|
-```
+![G chord on Em scale for piano as output by program](piano-Em-chord-G.png)
 
-
-Example 7: display all notes of the D major chord on the natural E minor scale on a piano:
-```
-$ ./fretboard -p -s Em -c D
-```
-```
-scale: Em, chord: D
-,___________________________,___________________________, 
-|  | | | |  |  |#| | | | |  |  | | | |  |  |#| | | | |  | 
-|  | | | |  |  |#| | | | |  |  | | | |  |  |#| | | | |  | 
-|  |_| |_|  |  |_| |_| |_|  |  |_| |_|  |  |_| |_| |_|  | 
-| o | # | o |   | o | # | o | o | # | o |   | o | # | o | 
-| o | # | o |   | o | # | o | o | # | o |   | o | # | o | 
-|___|___|___|___|___|___|___|___|___|___|___|___|___|___|
-```
 
 
 ----------------------------------------------------------------------
